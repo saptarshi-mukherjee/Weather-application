@@ -1,20 +1,38 @@
 package com.weatherapp.weather_details.Services;
 
 import com.weatherapp.weather_details.DTO.CurrentWeatherDto;
+import com.weatherapp.weather_details.DTO.LocationDetails;
+import com.weatherapp.weather_details.Exceptions.LocationNotFoundException;
 import com.weatherapp.weather_details.Models.CurrentWeatherForecast;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 public class OpenWeatherMapServices implements WeatherServices{
+    String api_key="809de0328c67c87e7d0727cec3849488";
 
     @Override
-    public CurrentWeatherForecast getCurrentWeather(double lat, double lon) {
-        String api_key="809de0328c67c87e7d0727cec3849488";
-        String url="https://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid="+api_key;
+    public CurrentWeatherForecast getCurrentWeather(double lat, double lon) throws LocationNotFoundException {
+        if((lat>=-90 && lat<=90) || (lon>=-180 && lon<=180)) {
+            String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + api_key;
+            RestTemplate rest = new RestTemplate();
+            CurrentWeatherDto weather = rest.getForObject(url, CurrentWeatherDto.class);
+            return getCustomWeather(weather);
+        }
+        throw new LocationNotFoundException("Location does not exist");
+    }
+
+    @Override
+    public List<LocationDetails> unwrapLatAndLon(String city) throws LocationNotFoundException{
+        String url="http://api.openweathermap.org/geo/1.0/direct?q="+city+"&limit="+1+"&appid="+api_key;
         RestTemplate rest=new RestTemplate();
-        CurrentWeatherDto weather=rest.getForObject(url, CurrentWeatherDto.class);
-        return getCustomWeather(weather);
+        LocationDetails[] location=rest.getForObject(url, LocationDetails[].class);
+        List<LocationDetails> loc=List.of(location);
+        if(loc.isEmpty())
+            throw new LocationNotFoundException("Location does not exist");
+        return loc;
     }
 
     private CurrentWeatherForecast getCustomWeather(CurrentWeatherDto w) {

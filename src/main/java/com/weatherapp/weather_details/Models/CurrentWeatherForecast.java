@@ -19,7 +19,8 @@ public class CurrentWeatherForecast {
     }
 
     public void setAvg_temperature(double avg_temperature) {
-        this.avg_temperature = avg_temperature;
+        this.avg_temperature = avg_temperature-273.0;
+        this.avg_temperature=Math.round(this.avg_temperature);
     }
 
     public double getReal_feel() {
@@ -27,7 +28,8 @@ public class CurrentWeatherForecast {
     }
 
     public void setReal_feel(double real_feel) {
-        this.real_feel = real_feel;
+        this.real_feel = real_feel-273.0;
+        this.real_feel=Math.round(this.real_feel);
     }
 
     public double getMax_temperature() {
@@ -35,7 +37,8 @@ public class CurrentWeatherForecast {
     }
 
     public void setMax_temperature(double max_temperature) {
-        this.max_temperature = max_temperature;
+        this.max_temperature = max_temperature-273.0;
+        this.max_temperature=Math.round(this.max_temperature);
     }
 
     public double getMin_temperature() {
@@ -43,7 +46,8 @@ public class CurrentWeatherForecast {
     }
 
     public void setMin_temperature(double min_temperature) {
-        this.min_temperature = min_temperature;
+        this.min_temperature = min_temperature-273.0;
+        this.min_temperature=Math.round(this.min_temperature);
     }
 
     public double getPressure() {
