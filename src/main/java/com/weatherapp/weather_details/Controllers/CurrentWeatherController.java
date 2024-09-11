@@ -4,6 +4,7 @@ package com.weatherapp.weather_details.Controllers;
 import com.weatherapp.weather_details.DTO.LocationDetails;
 import com.weatherapp.weather_details.Exceptions.LocationNotFoundException;
 import com.weatherapp.weather_details.Models.CurrentWeatherForecast;
+import com.weatherapp.weather_details.Models.FourDayWeatherForecast;
 import com.weatherapp.weather_details.Services.WeatherServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -35,5 +36,14 @@ public class CurrentWeatherController {
         double lon=location_city.get(0).getLon();
         CurrentWeatherForecast wth=weather.getCurrentWeather(lat,lon);
         return new ResponseEntity<>(wth, HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping("/get/weather/city/forecast")
+    public ResponseEntity<List<FourDayWeatherForecast>> fourDayForecast(@RequestParam("city") String city) throws LocationNotFoundException{
+        List<LocationDetails> location_city=weather.unwrapLatAndLon(city);
+        double lat=location_city.get(0).getLat();
+        double lon=location_city.get(0).getLon();
+        List<FourDayWeatherForecast> forecast=weather.getForecast(lat,lon);
+        return new ResponseEntity<>(forecast, HttpStatusCode.valueOf(200));
     }
 }
